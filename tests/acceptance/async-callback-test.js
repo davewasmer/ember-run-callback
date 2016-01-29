@@ -10,10 +10,19 @@ test('Ember.run.later()', function(assert) {
     assert.equal(find('.status').text().trim(), 'Async ran');
   });
 });
+
 test('callback() wrapped', function(assert) {
   visit('/');
   click('.run-callback');
   andThen(() => {
     assert.equal(find('.status').text().trim(), 'Async ran');
+  });
+});
+
+test('callback() & cancel()', function(assert) {
+  visit('/');
+  click('.run-callback-and-cancel');
+  andThen(() => {
+    assert.equal(find('.status').text().trim(), 'Async did not run');
   });
 });

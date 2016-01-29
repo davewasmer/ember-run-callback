@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import callback from 'ember-run-callback';
+import callback, { cancel } from 'ember-run-callback';
 
 export default Ember.Component.extend({
 
@@ -12,12 +12,31 @@ export default Ember.Component.extend({
       }, 500);
     },
     runCallback() {
-      setTimeout(callback(() => {
+      callback(() => {
         return new Ember.RSVP.Promise((resolve) => {
           this.set('asyncDidRun', true);
           resolve();
         });
-      }), 500);
+      });
+    },
+
+    runAndCancel() {
+      let foo = callback(() => {
+        return new Ember.RSVP.Promise((resolve) => {
+          setTimeout(() => {
+
+            if (!this.isDestroyed) {
+              this.set('asyncDidRun', true);
+            }
+
+            resolve();
+          }, 1000);
+        });
+      });
+
+      setTimeout(() => {
+        cancel(foo);
+      }, 250);
     }
   }
 

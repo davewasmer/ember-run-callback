@@ -22,18 +22,23 @@ export default function(fn) {
     run(invocation.fn);
     invocation.isFinished = true;
     delete stateMap[invocation.id];
+
+    return invocation.id;
   }
   Test.registerWaiter(invocation.waiter);
   stateMap[invocation.id] = invocation;
   wrapped.__callback_guid = invocation.id;
-  return wrapped;
+
+  return wrapped();
 }
 
-export function cancel(wrapped) {
-  if (wrapped && stateMap[wrapped.__callback_guid]) {
-    let callback = stateMap[wrapped.__callback_guid];
+export function cancel(id) {
+  let callback = stateMap[id];
+
+  if (callback) {
     Test.unregisterWaiter(callback.waiter);
-    callback.fn = Ember.RSVP.resolve;
-    stateMap.delete(wrapped);
+    callback.fn = function() { };
+
+    delete stateMap[id];
   }
 }
