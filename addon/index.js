@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 const run = Ember.run;
 const Test = Ember.Test;
+const hasTest = !!Test;
 
 let stateMap = {};
 let guid = 0;
@@ -12,7 +13,7 @@ export default function(fn) {
     id: guid++,
     isFinished: false,
     waiter() {
-      if (invocation.isFinished) {
+      if (invocation.isFinished && hasTest) {
         Test.unregisterWaiter(invocation.waiter);
       }
       return invocation.isFinished;
@@ -23,7 +24,9 @@ export default function(fn) {
     invocation.isFinished = true;
     delete stateMap[invocation.id];
   }
-  Test.registerWaiter(invocation.waiter);
+  if (hasTest) {
+    Test.registerWaiter(invocation.waiter);
+  }
   stateMap[invocation.id] = invocation;
   wrapped.__callback_guid = invocation.id;
   return wrapped;
