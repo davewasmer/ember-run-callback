@@ -1,5 +1,6 @@
 <button class='run-later' {{action 'runLater'}}>Ember.run.later()</button>
 <button class='run-callback' {{action 'runCallback'}}>callback()</button>
+<button class='run-callback-and-cancel' {{action 'runAndCancel'}}>callback() & cancel()</button>
 
 <div class='status'>
   {{if asyncDidRun 'Async ran' 'Async did not run'}}
