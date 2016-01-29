@@ -20,7 +20,6 @@ export default function(fn) {
   };
   function wrapped() {
     run(invocation.fn);
-    console.log('invcation ran');
     invocation.isFinished = true;
     delete stateMap[invocation.id];
   }
