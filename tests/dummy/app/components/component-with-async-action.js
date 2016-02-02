@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import callback from 'ember-run-callback';
 
+const { run } = Ember;
+
 export default Ember.Component.extend({
 
   asyncDidRun: false,
@@ -18,6 +20,20 @@ export default Ember.Component.extend({
           resolve();
         });
       }), 500);
+    },
+
+    runCallbackWithAsync() {
+      setTimeout(callback(() => {
+        return new Ember.RSVP.Promise((resolve) => {
+          setTimeout(() => {
+            run(() => {
+              this.set('asyncDidRun', true);
+
+              resolve();
+            });
+          }, 500);
+        });
+      }));
     }
   }
 

@@ -19,14 +19,22 @@ export default function(fn) {
       return invocation.isFinished;
     }
   };
+
   function wrapped() {
-    run(invocation.fn);
-    invocation.isFinished = true;
-    delete stateMap[invocation.id];
+    let result = run(invocation.fn);
+
+    return Ember.RSVP.resolve(result)
+      .then(() => {
+        invocation.isFinished = true;
+
+        delete stateMap[invocation.id];
+      });
   }
+
   if (hasTest) {
     Test.registerWaiter(invocation.waiter);
   }
+
   stateMap[invocation.id] = invocation;
   wrapped.__callback_guid = invocation.id;
   return wrapped;
